@@ -1,5 +1,5 @@
 locals {
-  ms1_configurations = fileset("${path.module}/microservices/ms1/*.json")
+  ms1_configurations = fileset("${path.module}/microservices/ms1", "*.json")
 }
 
 module "ms1_values" {

@@ -17,7 +17,7 @@ locals {
 module "ms1_values" {
   source = "git::https://github.com/deyanstoyanov10/consul-kv-module.git?ref=v0.0.1"
 
-  for_each = local.microservices_configurations
+  for_each = { for entry in local.microservices_configurations : "${entry.microservice_key_name}.${entry.microservice_key_prefix}.${entry.microservice_configuration}" => entry }
 
   datacenter = "${var.dc}"
   key_path = "${each.microservice_key_prefix}${each.microservice_key_name}"

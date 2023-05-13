@@ -4,7 +4,7 @@ locals {
     "ms2"
   ]
 
-  configuration_path = "${path.module}/microservices/"
+  configuration_path = "${path.module}/microservices"
 
   microservices_configurations = flatten([
     for microservice in local.microservices : [
@@ -22,13 +22,11 @@ locals {
 module "test_ms1" {
   source = "git::https://github.com/deyanstoyanov10/consul-kv-module.git?ref=v0.0.1"
 
-  microservice_name = "ms1"
-  for_each = fileset("${configuration_path}${microservice_name}", "*.json")
-  microservice_key_name = replace(each.key, ".json", "")
+  for_each = fileset("${configuration_path}/ms1", "*.json")
 
   datacenter = "${var.dc}"
-  key_path   = "${var.unit}/${microservice_name}/${microservice_key_name}"
-  key_value  = file("${configuration_path}${microservice_name}/${each.key}")
+  key_path   = "${var.unit}/${microservice_name}/${replace(each.key, ".json", "")}"
+  key_value  = file("${configuration_path}/ms1/${each.key}")
 }
 
 //module "test_unit_configurations" {

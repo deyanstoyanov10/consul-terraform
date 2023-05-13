@@ -7,7 +7,7 @@ locals {
     for microservice in local.microservices : [
       for file in fileset("${path.module}/microservices/${microservice}", "*.json") : {
         microservice_key_name = replace(file, ".json$", "")
-        microservice_key_prefix = "${var.unit}/${microservice}/"
+        microservice_key_prefix = "${var.unit}/${microservice}"
         microservice_configuration = file("${path.module}/microservices/${microservice}/${file}")
       }
     ]
@@ -20,6 +20,6 @@ module "ms1_values" {
   for_each = { for entry in local.microservices_configurations : "${entry.microservice_key_name}.${entry.microservice_key_prefix}.${entry.microservice_configuration}" => entry }
 
   datacenter = "${var.dc}"
-  key_path = "${each.microservice_key_prefix}${each.microservice_key_name}"
-  key_value = each.microservice_configuration
+  key_path = "${each.value.microservice_key_prefix}/${each.value.microservice_key_name}"
+  key_value = each.value.microservice_configuration
 }

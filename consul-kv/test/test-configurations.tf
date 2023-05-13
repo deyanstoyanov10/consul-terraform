@@ -22,11 +22,11 @@ locals {
 module "test_ms1" {
   source = "git::https://github.com/deyanstoyanov10/consul-kv-module.git?ref=v0.0.1"
 
-  for_each = fileset("${configuration_path}/ms1", "*.json")
+  for_each = fileset("${local.configuration_path}/ms1", "*.json")
 
   datacenter = "${var.dc}"
-  key_path   = "${var.unit}/${microservice_name}/${replace(each.key, ".json", "")}"
-  key_value  = file("${configuration_path}/ms1/${each.key}")
+  key_path   = "${var.unit}/ms1/${replace(each.key, ".json", "")}"
+  key_value  = file("${local.configuration_path}/ms1/${each.key}")
 }
 
 //module "test_unit_configurations" {

@@ -4,8 +4,6 @@ locals {
     "ms2"
   ]
 
-  configuration_path = "${path.module}/microservices"
-
   microservices_configurations = flatten([
     for microservice in local.microservices : [
       for file in fileset("${path.module}/microservices/${microservice}", "*.json") : {
@@ -15,26 +13,14 @@ locals {
       }
     ]
   ])
-
-  
 }
 
-module "test_ms1" {
+module "test_unit_configurations" {
   source = "git::https://github.com/deyanstoyanov10/consul-kv-module.git?ref=v0.0.1"
 
-  for_each = fileset("${local.configuration_path}/ms1", "*.json")
+  for_each = { for entry in local.microservices_configurations : "${entry.microservice_key_name}.${entry.microservice_key_prefix}.${entry.microservice_configuration}" => entry }
 
   datacenter = "${var.dc}"
-  key_path   = "${var.unit}/ms1/${replace(each.key, ".json", "")}"
-  key_value  = file("${local.configuration_path}/ms1/${each.key}")
+  key_path = "${each.value.microservice_key_prefix}/${each.value.microservice_key_name}"
+  key_value = each.value.microservice_configuration
 }
-
-//module "test_unit_configurations" {
-//  source = "git::https://github.com/deyanstoyanov10/consul-kv-module.git?ref=v0.0.1"
-//
-//  for_each = { for entry in local.microservices_configurations : "${entry.microservice_key_name}.${entry.microservice_key_prefix}.${entry.microservice_configuration}" => entry }
-//
-//  datacenter = "${var.dc}"
-//  key_path = "${each.value.microservice_key_prefix}/${each.value.microservice_key_name}"
-//  key_value = each.value.microservice_configuration
-//}

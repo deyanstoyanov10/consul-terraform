@@ -29,6 +29,16 @@ module "test_ms1" {
   key_value  = file("${local.configuration_path}/ms1/${each.key}")
 }
 
+module "test_ms2" {
+  source = "git::https://github.com/deyanstoyanov10/consul-kv-module.git?ref=v0.0.1"
+
+  for_each = fileset("${local.configuration_path}/ms2", "*.json")
+
+  datacenter = "${var.dc}"
+  key_path   = "${var.unit}/ms2/${replace(each.key, ".json", "")}"
+  key_value  = file("${local.configuration_path}/ms2/${each.key}")
+}
+
 //module "test_unit_configurations" {
 //  source = "git::https://github.com/deyanstoyanov10/consul-kv-module.git?ref=v0.0.1"
 //

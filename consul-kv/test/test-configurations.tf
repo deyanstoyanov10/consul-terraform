@@ -1,6 +1,7 @@
 locals {
   microservices = [
-    "ms1"
+    "ms1",
+    "ms2"
   ]
 
   microservices_configurations = flatten([
